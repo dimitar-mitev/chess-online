@@ -6,6 +6,8 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using chess_online.Web.Models;
+using chess_online.Models;
+using chess_online.Data;
 
 namespace chess_online.Web
 {

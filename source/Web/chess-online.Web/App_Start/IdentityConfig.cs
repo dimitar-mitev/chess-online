@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using chess_online.Web.Models;
+using chess_online.Models;
+using chess_online.Data;
 
 namespace chess_online.Web
 {

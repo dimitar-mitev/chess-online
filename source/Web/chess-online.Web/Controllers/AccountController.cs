@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using chess_online.Web.Models;
+using chess_online.Models;
 
 namespace chess_online.Web.Controllers
 {
