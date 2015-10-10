@@ -6,7 +6,7 @@ namespace chess_online.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("Chess-online", throwIfV1Schema: false)
         {
         }
 
