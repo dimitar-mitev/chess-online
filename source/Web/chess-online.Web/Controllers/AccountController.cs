@@ -10,18 +10,24 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using chess_online.Web.Models;
 using chess_online.Models;
+using chess_online.Data;
 
 namespace chess_online.Web.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+
+        private IChessOnlineData data;
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
         public AccountController()
         {
+            this.data = new ChessOnlineData();
         }
+
+
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
@@ -80,6 +86,7 @@ namespace chess_online.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    Session["nickName"] = data.Players.Find(a => a.ApplicationUser == User).Select(t => t.DisplayName); 
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -164,7 +171,7 @@ namespace chess_online.Web.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Welcome", "Home");
                 }
                 AddErrors(result);
             }
