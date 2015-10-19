@@ -213,6 +213,7 @@ namespace chess_online.Web.Controllers
 
         //
         // GET: /Manage/ChangePassword
+        [Authorize(Roles ="Player")]
         public ActionResult ChangePassword()
         {
             return View();
@@ -222,6 +223,7 @@ namespace chess_online.Web.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Player")]
         public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)

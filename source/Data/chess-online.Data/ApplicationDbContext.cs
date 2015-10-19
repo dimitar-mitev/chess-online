@@ -1,5 +1,4 @@
-﻿
-namespace chess_online.Data
+﻿namespace chess_online.Data
 {
     using System.Data.Entity;
     using Microsoft.AspNet.Identity.EntityFramework;
@@ -7,6 +6,7 @@ namespace chess_online.Data
     using Models;
     using Migrations;
     using Models.UserModels;
+    using Models.SocialModels;
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
@@ -17,6 +17,7 @@ namespace chess_online.Data
         }
 
         public IDbSet<Player> players { get; set; }
+        public IDbSet<ChatRoom> chatRooms { get; set; }
 
         public static ApplicationDbContext Create()
         {

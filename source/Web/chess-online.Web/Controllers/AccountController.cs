@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using chess_online.Web.Models;
 using chess_online.Models;
 using chess_online.Data;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace chess_online.Web.Controllers
 {
@@ -86,7 +87,22 @@ namespace chess_online.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    Session["nickName"] = data.Players.Find(a => a.ApplicationUser == User).Select(t => t.DisplayName); 
+                    var user = await UserManager.FindAsync(model.Email, model.Password);
+                    var roles = await UserManager.GetRolesAsync(user.Id);
+
+                    if (roles.Contains("Player"))
+                    {
+                        Session["nickName"] = data.Players.Find(a => a.ApplicationUser == User).Select(t => t.DisplayName);
+                        return RedirectToLocal(returnUrl);
+                    }
+                    if (roles.Contains("RootAdmin"))
+                    {
+                        return RedirectToLocal("/Admin/Default/");
+                    }
+                    if (roles.Contains("Admin"))
+                    {
+                        return RedirectToLocal("/Admin/Default/");
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -163,6 +179,12 @@ namespace chess_online.Web.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+                    if (!RoleManager.RoleExists("Player"))
+                    {
+                        RoleManager.Create(new IdentityRole("Player"));
+                    }
+                    UserManager.AddToRole(user.Id, "Player");
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -172,6 +194,31 @@ namespace chess_online.Web.Controllers
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
                     return RedirectToAction("Welcome", "Home");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+        [HttpPost]
+        [Authorize(Roles ="RootAdmin")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterAdmin(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
+                    if (!RoleManager.RoleExists("Admin"))
+                    {
+                        RoleManager.Create(new IdentityRole("Admin"));
+                    }
+                    UserManager.AddToRole(user.Id, "Admin");
+                    return RedirectToAction("Index", "Admin/Root");
                 }
                 AddErrors(result);
             }

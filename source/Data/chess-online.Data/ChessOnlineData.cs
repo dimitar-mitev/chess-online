@@ -1,13 +1,13 @@
-﻿using chess_online.Data.Repositories;
-using chess_online.Models.UserModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace chess_online.Data
+﻿namespace chess_online.Data
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Repositories;
+    using Models.SocialModels;
+    using Models.UserModels;
+    using Models;
+
     public class ChessOnlineData : IChessOnlineData
     {
         private IApplicationDbContext context;
@@ -29,6 +29,22 @@ namespace chess_online.Data
             get
             {
                 return this.GetRepository<Player>();
+            }
+        }
+
+        public IGenericRepository<ChatRoom> ChatRooms
+        {
+            get
+            {
+                return this.GetRepository<ChatRoom>();
+            }
+        }
+
+        public IGenericRepository<ApplicationUser> ApplicationUsers
+        {
+            get
+            {
+                return this.GetRepository<ApplicationUser>();
             }
         }
 

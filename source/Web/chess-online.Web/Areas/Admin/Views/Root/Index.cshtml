@@ -1,0 +1,14 @@
+﻿@model chess_online.Web.Areas.Admin.Models.IndexViewModel
+@{
+    ViewBag.Title = "Manage Admin Accounts";
+}
+
+<h2>Admin Account Managment</h2>
+<ul class="list-group">
+    @foreach (var item in Model.Admins)
+    {
+        <li class="list-group-item">@item.Email @Html.ActionLink("Delete", "Remove", new { Id = item.Id }, new { @class = "btn btn-default" })</li>
+    }
+</ul>
+@Html.ActionLink("Create new Admin account", "Create", new { }, new { @class = "btn btn-default btn-lg" })
+
